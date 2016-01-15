@@ -14,7 +14,7 @@ func TestGetServerInfo(t *testing.T) {
 		t.Fatal(err)
 	}
 	w := httptest.NewRecorder()
-	handler(w, req)
+	serverInfoHandler(w, req)
 	if w.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, w.Code)
 	}

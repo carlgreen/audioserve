@@ -5,11 +5,11 @@ import (
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello, world\n")
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/server-info", serverInfoHandler)
 	http.ListenAndServe(":3689", nil)
 }

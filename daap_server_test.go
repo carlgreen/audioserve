@@ -13,16 +13,16 @@ func TestGetServerInfo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	w := httptest.NewRecorder()
-	serverInfoHandler(w, req)
-	if w.Code != http.StatusOK {
-		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, w.Code)
+	resp := httptest.NewRecorder()
+	serverInfoHandler(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}
-	p, err := ioutil.ReadAll(w.Body)
+	p, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
-	serverHeader := w.HeaderMap.Get("DAAP-Server")
+	serverHeader := resp.HeaderMap.Get("DAAP-Server")
 	if serverHeader == "" {
 		t.Error("did not contain DAAP-Server header")
 	} else if !strings.Contains(serverHeader, `daap-server`) {

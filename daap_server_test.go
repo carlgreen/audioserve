@@ -22,6 +22,12 @@ func TestGetServerInfo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	serverHeader := w.HeaderMap.Get("DAAP-Server")
+	if serverHeader == "" {
+		t.Error("did not contain DAAP-Server header")
+	} else if !strings.Contains(serverHeader, `daap-server`) {
+		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
+	}
 	if !strings.Contains(string(p), `hello, world`) {
 		t.Errorf("response body doen't match:\n%s", p)
 	}

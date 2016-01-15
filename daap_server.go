@@ -6,6 +6,7 @@ import (
 )
 
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 	fmt.Fprintf(w, "hello, world\n")
 }
 

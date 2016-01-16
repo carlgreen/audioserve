@@ -9,13 +9,6 @@ import (
 	"testing"
 )
 
-func TestContentCodeToInt(t *testing.T) {
-	i := contentCodeToInt("mccr")
-	if i != 1835230066 {
-		t.Errorf("wrong integer value for content code: %v", i)
-	}
-}
-
 func TestIntToByteArray(t *testing.T) {
 	b := intToByteArray(1835230066)
 	if !bytes.Equal(b, []byte{109, 99, 99, 114}) {

@@ -40,11 +40,25 @@ func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := []byte{}
 	data = append(data, intToByteArray(contentCodeToInt("mccr"))...)
-	data = append(data, intToByteArray(73)...)
+	data = append(data, intToByteArray(134)...)
 
 	data = append(data, intToByteArray(contentCodeToInt("mstt"))...)
 	data = append(data, intToByteArray(4)...)
 	data = append(data, intToByteArray(200)...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mdcl"))...)
+	data = append(data, intToByteArray(12+31+10)...)
+	data = append(data, intToByteArray(contentCodeToInt("mcnm"))...)
+	data = append(data, intToByteArray(4)...)
+	data = append(data, intToByteArray(contentCodeToInt("abal"))...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mcna"))...)
+	data = append(data, intToByteArray(23)...)
+	data = append(data, "daap.browsealbumlisting"...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mcty"))...)
+	data = append(data, intToByteArray(2)...)
+	data = append(data, shortToByteArray(12)...) // container
 
 	data = append(data, intToByteArray(contentCodeToInt("mdcl"))...)
 	data = append(data, intToByteArray(12+31+10)...)

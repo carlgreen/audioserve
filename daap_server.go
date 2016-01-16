@@ -11,6 +11,11 @@ type ContentCode struct {
 	dmapType int16
 }
 
+var contentCodes = []ContentCode{
+	{"abal", "daap.browsealbumlisting", 12},
+	{"msrv", "dmap.serverinforesponse", 12},
+}
+
 func intToByteArray(i int) []byte {
 	data := [4]byte{
 		byte((i >> 24) & 0xFF),
@@ -80,8 +85,9 @@ func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)
 
-	data = append(data, contentCodeToData(ContentCode{"abal", "daap.browsealbumlisting", 12})...)
-	data = append(data, contentCodeToData(ContentCode{"msrv", "dmap.serverinforesponse", 12})...)
+	for _, contentCode := range contentCodes {
+		data = append(data, contentCodeToData(contentCode)...)
+	}
 
 	w.Write(data)
 }

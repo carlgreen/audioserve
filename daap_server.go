@@ -11,9 +11,11 @@ type ContentCode struct {
 	dmapType int16
 }
 
+const DmapContainer int16 = 12
+
 var contentCodes = []ContentCode{
-	{"abal", "daap.browsealbumlisting", 12},
-	{"msrv", "dmap.serverinforesponse", 12},
+	{"abal", "daap.browsealbumlisting", DmapContainer},
+	{"msrv", "dmap.serverinforesponse", DmapContainer},
 }
 
 func intToByteArray(i int) []byte {

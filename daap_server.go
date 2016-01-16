@@ -77,25 +77,27 @@ func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello, world\n")
 }
 
-func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
+func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 
-	data := []byte{}
-	data = append(data, "mccr"...)
-	data = append(data, intToByteArray(134)...)
+		data := []byte{}
+		data = append(data, "mccr"...)
+		data = append(data, intToByteArray(134)...)
 
-	data = append(data, "mstt"...)
-	data = append(data, intToData(200)...)
+		data = append(data, "mstt"...)
+		data = append(data, intToData(200)...)
 
-	for _, contentCode := range contentCodes {
-		data = append(data, contentCodeToData(contentCode)...)
-	}
+		for _, contentCode := range contentCodes {
+			data = append(data, contentCodeToData(contentCode)...)
+		}
 
-	w.Write(data)
+		w.Write(data)
+	})
 }
 
 func main() {
 	http.HandleFunc("/server-info", serverInfoHandler)
-	http.HandleFunc("/content-codes", contentCodesHandler)
+	http.HandleFunc("/content-codes", contentCodesHandler(contentCodes))
 	http.ListenAndServe(":3689", nil)
 }

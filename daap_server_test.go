@@ -83,12 +83,17 @@ func TestGetServerInfo(t *testing.T) {
 }
 
 func TestGetContentCodes(t *testing.T) {
+	var contentCodes = []ContentCode{
+		{"abal", "daap.browsealbumlisting", DmapContainer},
+		{"msrv", "dmap.serverinforesponse", DmapContainer},
+	}
+	contentCodesHandle := contentCodesHandler(contentCodes)
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	contentCodesHandler(resp, req)
+	contentCodesHandle(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}

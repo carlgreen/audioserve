@@ -23,6 +23,24 @@ func shortToByteArray(i int16) []byte {
 	return data[:]
 }
 
+func stringToData(s string) []byte {
+	data := intToByteArray(len(s))
+	data = append(data, s...)
+	return data
+}
+
+func intToData(i int) []byte {
+	data := intToByteArray(4)
+	data = append(data, intToByteArray(i)...)
+	return data
+}
+
+func shortToData(i int16) []byte {
+	data := intToByteArray(2)
+	data = append(data, shortToByteArray(i)...)
+	return data
+}
+
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 	fmt.Fprintf(w, "hello, world\n")
@@ -36,36 +54,29 @@ func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
 	data = append(data, intToByteArray(134)...)
 
 	data = append(data, "mstt"...)
-	data = append(data, intToByteArray(4)...)
-	data = append(data, intToByteArray(200)...)
+	data = append(data, intToData(200)...)
 
 	data = append(data, "mdcl"...)
 	data = append(data, intToByteArray(12+31+10)...)
 	data = append(data, "mcnm"...)
-	data = append(data, intToByteArray(4)...)
-	data = append(data, "abal"...)
+	data = append(data, stringToData("abal")...)
 
 	data = append(data, "mcna"...)
-	data = append(data, intToByteArray(23)...)
-	data = append(data, "daap.browsealbumlisting"...)
+	data = append(data, stringToData("daap.browsealbumlisting")...)
 
 	data = append(data, "mcty"...)
-	data = append(data, intToByteArray(2)...)
-	data = append(data, shortToByteArray(12)...) // container
+	data = append(data, shortToData(12)...) // container
 
 	data = append(data, "mdcl"...)
 	data = append(data, intToByteArray(12+31+10)...)
 	data = append(data, "mcnm"...)
-	data = append(data, intToByteArray(4)...)
-	data = append(data, "msrv"...)
+	data = append(data, stringToData("msrv")...)
 
 	data = append(data, "mcna"...)
-	data = append(data, intToByteArray(23)...)
-	data = append(data, "dmap.serverinforesponse"...)
+	data = append(data, stringToData("dmap.serverinforesponse")...)
 
 	data = append(data, "mcty"...)
-	data = append(data, intToByteArray(2)...)
-	data = append(data, shortToByteArray(12)...) // container
+	data = append(data, shortToData(12)...) // container
 
 	w.Write(data)
 }

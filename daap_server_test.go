@@ -23,6 +23,27 @@ func TestShortToByteArray(t *testing.T) {
 	}
 }
 
+func TestStringToData(t *testing.T) {
+	data := stringToData("abcde")
+	if !bytes.Equal(data, []byte{0, 0, 0, 5, 97, 98, 99, 100, 101}) {
+		t.Errorf("wrong byte array value for string: %v", data)
+	}
+}
+
+func TestIntToData(t *testing.T) {
+	data := intToData(200)
+	if !bytes.Equal(data, []byte{0, 0, 0, 4, 0, 0, 0, 200}) {
+		t.Errorf("wrong byte array value for int: %v", data)
+	}
+}
+
+func TestShortToData(t *testing.T) {
+	data := shortToData(12)
+	if !bytes.Equal(data, []byte{0, 0, 0, 2, 0, 12}) {
+		t.Errorf("wrong byte array value for short: %v", data)
+	}
+}
+
 func TestGetServerInfo(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {

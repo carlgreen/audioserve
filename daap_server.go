@@ -22,6 +22,14 @@ func intToByteArray(i int) []byte {
 	return data[:]
 }
 
+func shortToByteArray(i int16) []byte {
+	data := [2]byte{
+		byte((i >> 8) & 0xFF),
+		byte(i & 0xFF),
+	}
+	return data[:]
+}
+
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 	fmt.Fprintf(w, "hello, world\n")
@@ -29,14 +37,28 @@ func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-	// data := []byte{109, 99, 99, 114, 0, 0, 0, 73, 109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200}
+
 	data := []byte{}
 	data = append(data, intToByteArray(contentCodeToInt("mccr"))...)
-	data = append(data, intToByteArray(12)...)
+	data = append(data, intToByteArray(73)...)
 
 	data = append(data, intToByteArray(contentCodeToInt("mstt"))...)
 	data = append(data, intToByteArray(4)...)
 	data = append(data, intToByteArray(200)...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mdcl"))...)
+	data = append(data, intToByteArray(12+31+10)...)
+	data = append(data, intToByteArray(contentCodeToInt("mcnm"))...)
+	data = append(data, intToByteArray(4)...)
+	data = append(data, intToByteArray(contentCodeToInt("msrv"))...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mcna"))...)
+	data = append(data, intToByteArray(23)...)
+	data = append(data, "dmap.serverinforesponse"...)
+
+	data = append(data, intToByteArray(contentCodeToInt("mcty"))...)
+	data = append(data, intToByteArray(2)...)
+	data = append(data, shortToByteArray(12)...) // container
 
 	w.Write(data)
 }

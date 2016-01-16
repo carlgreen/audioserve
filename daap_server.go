@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+type ContentCode struct {
+	number   string
+	name     string
+	dmapType int16
+}
+
 func intToByteArray(i int) []byte {
 	data := [4]byte{
 		byte((i >> 24) & 0xFF),
@@ -41,6 +47,24 @@ func shortToData(i int16) []byte {
 	return data
 }
 
+func contentCodeToData(contentCode ContentCode) []byte {
+	data := []byte{}
+
+	data = append(data, "mdcl"...)
+	data = append(data, intToByteArray(12+8+len(contentCode.name)+10)...)
+
+	data = append(data, "mcnm"...)
+	data = append(data, stringToData(contentCode.number)...)
+
+	data = append(data, "mcna"...)
+	data = append(data, stringToData(contentCode.name)...)
+
+	data = append(data, "mcty"...)
+	data = append(data, shortToData(contentCode.dmapType)...)
+
+	return data
+}
+
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 	fmt.Fprintf(w, "hello, world\n")
@@ -56,27 +80,8 @@ func contentCodesHandler(w http.ResponseWriter, r *http.Request) {
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)
 
-	data = append(data, "mdcl"...)
-	data = append(data, intToByteArray(12+31+10)...)
-	data = append(data, "mcnm"...)
-	data = append(data, stringToData("abal")...)
-
-	data = append(data, "mcna"...)
-	data = append(data, stringToData("daap.browsealbumlisting")...)
-
-	data = append(data, "mcty"...)
-	data = append(data, shortToData(12)...) // container
-
-	data = append(data, "mdcl"...)
-	data = append(data, intToByteArray(12+31+10)...)
-	data = append(data, "mcnm"...)
-	data = append(data, stringToData("msrv")...)
-
-	data = append(data, "mcna"...)
-	data = append(data, stringToData("dmap.serverinforesponse")...)
-
-	data = append(data, "mcty"...)
-	data = append(data, shortToData(12)...) // container
+	data = append(data, contentCodeToData(ContentCode{"abal", "daap.browsealbumlisting", 12})...)
+	data = append(data, contentCodeToData(ContentCode{"msrv", "dmap.serverinforesponse", 12})...)
 
 	w.Write(data)
 }

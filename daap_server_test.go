@@ -44,6 +44,19 @@ func TestShortToData(t *testing.T) {
 	}
 }
 
+func TestContentCodeToData(t *testing.T) {
+	data := contentCodeToData(ContentCode{"abal", "daap.browsealbumlisting", 12})
+	expectedData := []byte{
+		109, 100, 99, 108, 0, 0, 0, 53, // mdcl
+		109, 99, 110, 109, 0, 0, 0, 4, 97, 98, 97, 108, // mcnm (abal)
+		109, 99, 110, 97, 0, 0, 0, 23, 100, 97, 97, 112, 46, 98, 114, 111, 119, 115, 101, 97, 108, 98, 117, 109, 108, 105, 115, 116, 105, 110, 103, // mcna
+		109, 99, 116, 121, 0, 0, 0, 2, 0, 12, // mcty
+	}
+	if !bytes.Equal(data, expectedData) {
+		t.Errorf("wrong byte array value for content code structure: %v", data)
+	}
+}
+
 func TestGetServerInfo(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {

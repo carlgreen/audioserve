@@ -59,7 +59,7 @@ func TestContentCodeToData(t *testing.T) {
 
 func TestVersionToData(t *testing.T) {
 	data := versionToData(Version{1, 0, 0})
-	if !bytes.Equal(data, []byte{0, 1, 0, 0}) {
+	if !bytes.Equal(data, []byte{0, 0, 0, 4, 0, 1, 0, 0}) {
 		t.Errorf("wrong byte array value for version: %v", data)
 	}
 }

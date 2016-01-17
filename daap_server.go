@@ -68,13 +68,15 @@ func shortToData(i int16) []byte {
 }
 
 func versionToData(version Version) []byte {
-	data := [4]byte{
+	data := intToByteArray(4)
+	versionData := [4]byte{
 		byte((version.major >> 8) & 0xFF),
 		byte(version.major & 0xFF),
 		byte(version.minor & 0xFF),
 		byte(version.patch & 0xFF),
 	}
-	return data[:]
+	data = append(data, versionData[:]...)
+	return data
 }
 
 func contentCodeToData(contentCode ContentCode) []byte {

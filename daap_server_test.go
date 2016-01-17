@@ -84,8 +84,13 @@ func TestGetServerInfo(t *testing.T) {
 	} else if !strings.Contains(serverHeader, `daap-server`) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
-	if !strings.Contains(string(p), `hello, world`) {
-		t.Errorf("response body doen't match:\n%s", p)
+	expectedData := []byte{
+		109, 115, 114, 118, 0, 0, 0, 16, // msrv
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+	}
+
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v", p)
 	}
 }
 

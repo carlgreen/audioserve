@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -90,7 +89,15 @@ func contentCodeToData(contentCode ContentCode) []byte {
 
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-	fmt.Fprintf(w, "hello, world\n")
+
+	data := []byte{}
+	data = append(data, "msrv"...)
+	data = append(data, intToByteArray(8+8)...)
+
+	data = append(data, "mstt"...)
+	data = append(data, intToData(200)...)
+
+	w.Write(data)
 }
 
 func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {

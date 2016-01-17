@@ -16,11 +16,19 @@ type Version struct {
 	patch uint8
 }
 
+const DmapShort int16 = 3
+const DmapLongLong int16 = 5
+const DmapString int16 = 9
 const DmapContainer int16 = 12
 
 var contentCodes = []ContentCode{
-	{"abal", "daap.browsealbumlisting", DmapContainer},
+	{"mstt", "dmap.status", DmapLongLong},
+	{"mdcl", "dmap.dictionary", DmapContainer},
 	{"msrv", "dmap.serverinforesponse", DmapContainer},
+	{"mccr", "dmap.contentcodesresponse", DmapContainer},
+	{"mcnm", "dmap.contentcodesnumber", DmapLongLong},
+	{"mcna", "dmap.contentcodesname", DmapString},
+	{"mcty", "dmap.contentcodestype", DmapShort},
 }
 
 func intToByteArray(i int) []byte {

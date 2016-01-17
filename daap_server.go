@@ -11,6 +11,12 @@ type ContentCode struct {
 	dmapType int16
 }
 
+type Version struct {
+	major uint16
+	minor uint8
+	patch uint8
+}
+
 const DmapContainer int16 = 12
 
 var contentCodes = []ContentCode{
@@ -52,6 +58,16 @@ func shortToData(i int16) []byte {
 	data := intToByteArray(2)
 	data = append(data, shortToByteArray(i)...)
 	return data
+}
+
+func versionToData(version Version) []byte {
+	data := [4]byte{
+		byte((version.major >> 8) & 0xFF),
+		byte(version.major & 0xFF),
+		byte(version.minor & 0xFF),
+		byte(version.patch & 0xFF),
+	}
+	return data[:]
 }
 
 func contentCodeToData(contentCode ContentCode) []byte {

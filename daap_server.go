@@ -16,19 +16,35 @@ type Version struct {
 	patch uint8
 }
 
+const DmapChar int16 = 1
 const DmapShort int16 = 3
 const DmapLong int16 = 5
 const DmapString int16 = 9
+const DmapVersion int16 = 11
 const DmapContainer int16 = 12
 
 var contentCodes = []ContentCode{
+	{"minm", "dmap.itemname", DmapString},
 	{"mstt", "dmap.status", DmapLong},
 	{"mdcl", "dmap.dictionary", DmapContainer},
 	{"msrv", "dmap.serverinforesponse", DmapContainer},
+	{"mslr", "dmap.loginrequired", DmapChar},
+	{"mpro", "dmap.protocolversion", DmapVersion},
+	{"msal", "dmap.supportsautologout", DmapChar},
+	{"msup", "dmap.supportsupdate", DmapChar},
+	{"mspi", "dmap.supportspersistentids", DmapChar},
+	{"msex", "dmap.supportsextensions", DmapChar},
+	{"msbr", "dmap.supportsbrowse", DmapChar},
+	{"msqy", "dmap.supportsquery", DmapChar},
+	{"msix", "dmap.supportsindex", DmapChar},
+	{"msrs", "dmap.supportsresolve", DmapChar},
+	{"mstm", "dmap.timeoutinterval", DmapLong},
+	{"msdc", "dmap.databasescount", DmapLong},
 	{"mccr", "dmap.contentcodesresponse", DmapContainer},
 	{"mcnm", "dmap.contentcodesnumber", DmapLong},
 	{"mcna", "dmap.contentcodesname", DmapString},
 	{"mcty", "dmap.contentcodestype", DmapShort},
+	{"apro", "daap.protocolversion", DmapVersion},
 }
 
 func intToByteArray(i int) []byte {
@@ -79,6 +95,12 @@ func versionToData(version Version) []byte {
 	return data
 }
 
+func charToData(b byte) []byte {
+	data := intToByteArray(1)
+	data = append(data, b)
+	return data
+}
+
 func contentCodeToData(contentCode ContentCode) []byte {
 	data := []byte{}
 
@@ -106,6 +128,48 @@ func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)
+
+	data = append(data, "mpro"...)
+	data = append(data, versionToData(Version{1, 0, 0})...)
+
+	data = append(data, "apro"...)
+	data = append(data, versionToData(Version{1, 0, 0})...)
+
+	data = append(data, "minm"...)
+	data = append(data, stringToData("daap-server")...)
+
+	data = append(data, "mslr"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "mstm"...)
+	data = append(data, intToData(1800)...)
+
+	data = append(data, "msal"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msup"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "mspi"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msex"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msbr"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msqy"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msix"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msrs"...)
+	data = append(data, charToData(1)...)
+
+	data = append(data, "msdc"...)
+	data = append(data, intToData(1)...)
 
 	headerData = append(headerData, intToByteArray(len(data))...)
 	data = append(headerData, data...)

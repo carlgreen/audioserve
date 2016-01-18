@@ -64,6 +64,13 @@ func TestVersionToData(t *testing.T) {
 	}
 }
 
+func TestCharToData(t *testing.T) {
+	data := charToData(1)
+	if !bytes.Equal(data, []byte{0, 0, 0, 1, 1}) {
+		t.Errorf("wrong byte array value for char: %v", data)
+	}
+}
+
 func TestGetServerInfo(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {
@@ -85,8 +92,22 @@ func TestGetServerInfo(t *testing.T) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
 	expectedData := []byte{
-		109, 115, 114, 118, 0, 0, 0, 12, // msrv
+		109, 115, 114, 118, 0, 0, 0, 160, // msrv
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+		109, 112, 114, 111, 0, 0, 0, 4, 0, 1, 0, 0, // mpro
+		97, 112, 114, 111, 0, 0, 0, 4, 0, 1, 0, 0, // apro
+		109, 105, 110, 109, 0, 0, 0, 11, 100, 97, 97, 112, 45, 115, 101, 114, 118, 101, 114, // minm
+		109, 115, 108, 114, 0, 0, 0, 1, 1, // mslr
+		109, 115, 116, 109, 0, 0, 0, 4, 0, 0, 7, 8, // mstm
+		109, 115, 97, 108, 0, 0, 0, 1, 1, // msal
+		109, 115, 117, 112, 0, 0, 0, 1, 1, // msup
+		109, 115, 112, 105, 0, 0, 0, 1, 1, // mspi
+		109, 115, 101, 120, 0, 0, 0, 1, 1, // msex
+		109, 115, 98, 114, 0, 0, 0, 1, 1, // msbr
+		109, 115, 113, 121, 0, 0, 0, 1, 1, // msqy
+		109, 115, 105, 120, 0, 0, 0, 1, 1, // msix
+		109, 115, 114, 115, 0, 0, 0, 1, 1, // msrs
+		109, 115, 100, 99, 0, 0, 0, 4, 0, 0, 0, 1, // msdc
 	}
 
 	if !bytes.Equal(p, expectedData) {

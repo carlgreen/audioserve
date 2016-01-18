@@ -17,16 +17,16 @@ type Version struct {
 }
 
 const DmapShort int16 = 3
-const DmapLongLong int16 = 5
+const DmapLong int16 = 5
 const DmapString int16 = 9
 const DmapContainer int16 = 12
 
 var contentCodes = []ContentCode{
-	{"mstt", "dmap.status", DmapLongLong},
+	{"mstt", "dmap.status", DmapLong},
 	{"mdcl", "dmap.dictionary", DmapContainer},
 	{"msrv", "dmap.serverinforesponse", DmapContainer},
 	{"mccr", "dmap.contentcodesresponse", DmapContainer},
-	{"mcnm", "dmap.contentcodesnumber", DmapLongLong},
+	{"mcnm", "dmap.contentcodesnumber", DmapLong},
 	{"mcna", "dmap.contentcodesname", DmapString},
 	{"mcty", "dmap.contentcodestype", DmapShort},
 }

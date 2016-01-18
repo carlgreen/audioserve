@@ -100,12 +100,15 @@ func contentCodeToData(contentCode ContentCode) []byte {
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 
+	headerData := []byte("msrv")
+
 	data := []byte{}
-	data = append(data, "msrv"...)
-	data = append(data, intToByteArray(12)...)
 
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)
+
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
 
 	w.Write(data)
 }
@@ -114,9 +117,9 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 
+		headerData := []byte("mccr")
+
 		data := []byte{}
-		data = append(data, "mccr"...)
-		data = append(data, intToByteArray(134)...)
 
 		data = append(data, "mstt"...)
 		data = append(data, intToData(200)...)
@@ -124,6 +127,9 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 		for _, contentCode := range contentCodes {
 			data = append(data, contentCodeToData(contentCode)...)
 		}
+
+		headerData = append(headerData, intToByteArray(len(data))...)
+		data = append(headerData, data...)
 
 		w.Write(data)
 	})

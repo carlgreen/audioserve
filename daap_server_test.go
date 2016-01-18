@@ -85,7 +85,7 @@ func TestGetServerInfo(t *testing.T) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
 	expectedData := []byte{
-		109, 115, 114, 118, 0, 0, 0, 16, // msrv
+		109, 115, 114, 118, 0, 0, 0, 12, // msrv
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 	}
 

@@ -102,7 +102,7 @@ func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := []byte{}
 	data = append(data, "msrv"...)
-	data = append(data, intToByteArray(8+8)...)
+	data = append(data, intToByteArray(12)...)
 
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)

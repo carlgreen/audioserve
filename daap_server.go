@@ -212,6 +212,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	data = append(data, intToData(200)...)
 
 	data = append(data, "mlid"...)
+	// TODO generate a real session ID
 	data = append(data, intToData(113)...)
 
 	headerData = append(headerData, intToByteArray(len(data))...)

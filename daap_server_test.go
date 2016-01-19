@@ -157,3 +157,34 @@ func TestGetContentCodes(t *testing.T) {
 		t.Errorf("response body doen't match:\n%v", p)
 	}
 }
+
+func TestGetLogin(t *testing.T) {
+	req, err := http.NewRequest("GET", "", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	loginHandler(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	serverHeader := resp.HeaderMap.Get("DAAP-Server")
+	if serverHeader == "" {
+		t.Error("did not contain DAAP-Server header")
+	} else if !strings.Contains(serverHeader, `daap-server`) {
+		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
+	}
+	expectedData := []byte{
+		109, 108, 111, 103, 0, 0, 0, 24, // mlog
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+		109, 108, 105, 100, 0, 0, 0, 4, 0, 0, 0, 113, // mlid
+	}
+
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v", p)
+	}
+}

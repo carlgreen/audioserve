@@ -40,6 +40,8 @@ var contentCodes = []ContentCode{
 	{"msrs", "dmap.supportsresolve", DmapChar},
 	{"mstm", "dmap.timeoutinterval", DmapLong},
 	{"msdc", "dmap.databasescount", DmapLong},
+	{"mlog", "dmap.loginresponse", DmapContainer},
+	{"mlid", "dmap.sessionid", DmapLong},
 	{"mccr", "dmap.contentcodesresponse", DmapContainer},
 	{"mcnm", "dmap.contentcodesnumber", DmapLong},
 	{"mcna", "dmap.contentcodesname", DmapString},
@@ -199,8 +201,28 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 	})
 }
 
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
+
+	headerData := []byte("mlog")
+
+	data := []byte{}
+
+	data = append(data, "mstt"...)
+	data = append(data, intToData(200)...)
+
+	data = append(data, "mlid"...)
+	data = append(data, intToData(113)...)
+
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
+
+	w.Write(data)
+}
+
 func main() {
 	http.HandleFunc("/server-info", serverInfoHandler)
 	http.HandleFunc("/content-codes", contentCodesHandler(contentCodes))
+	http.HandleFunc("/login", loginHandler)
 	http.ListenAndServe(":3689", nil)
 }

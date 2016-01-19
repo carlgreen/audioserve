@@ -188,3 +188,29 @@ func TestGetLogin(t *testing.T) {
 		t.Errorf("response body doen't match:\n%v", p)
 	}
 }
+
+func TestGetLogout(t *testing.T) {
+	req, err := http.NewRequest("GET", "?session-id=113", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	logoutHandler(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	serverHeader := resp.HeaderMap.Get("DAAP-Server")
+	if serverHeader == "" {
+		t.Error("did not contain DAAP-Server header")
+	} else if !strings.Contains(serverHeader, `daap-server`) {
+		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
+	}
+
+	if !bytes.Equal(p, []byte{}) {
+		t.Errorf("response body doen't match:\n%v", p)
+	}
+}

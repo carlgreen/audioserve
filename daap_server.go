@@ -220,9 +220,16 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
+
+	// TODO end session r.URL.Query().Get("session-id")
+}
+
 func main() {
 	http.HandleFunc("/server-info", serverInfoHandler)
 	http.HandleFunc("/content-codes", contentCodesHandler(contentCodes))
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.ListenAndServe(":3689", nil)
 }

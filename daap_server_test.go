@@ -91,6 +91,7 @@ func TestGetServerInfo(t *testing.T) {
 	} else if !strings.Contains(serverHeader, `daap-server`) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
+
 	expectedData := []byte{
 		109, 115, 114, 118, 0, 0, 0, 160, // msrv
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
@@ -109,7 +110,6 @@ func TestGetServerInfo(t *testing.T) {
 		109, 115, 114, 115, 0, 0, 0, 1, 1, // msrs
 		109, 115, 100, 99, 0, 0, 0, 4, 0, 0, 0, 1, // msdc
 	}
-
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v", p)
 	}
@@ -140,6 +140,7 @@ func TestGetContentCodes(t *testing.T) {
 	} else if !strings.Contains(serverHeader, `daap-server`) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
+
 	expectedData := []byte{
 		109, 99, 99, 114, 0, 0, 0, 134, // mccr
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
@@ -152,7 +153,6 @@ func TestGetContentCodes(t *testing.T) {
 		109, 99, 110, 97, 0, 0, 0, 23, 100, 109, 97, 112, 46, 115, 101, 114, 118, 101, 114, 105, 110, 102, 111, 114, 101, 115, 112, 111, 110, 115, 101, // mcna
 		109, 99, 116, 121, 0, 0, 0, 2, 0, 12, // mcty
 	}
-
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v", p)
 	}
@@ -178,12 +178,12 @@ func TestGetLogin(t *testing.T) {
 	} else if !strings.Contains(serverHeader, `daap-server`) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
+
 	expectedData := []byte{
 		109, 108, 111, 103, 0, 0, 0, 24, // mlog
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 		109, 108, 105, 100, 0, 0, 0, 4, 0, 0, 0, 113, // mlid
 	}
-
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v", p)
 	}

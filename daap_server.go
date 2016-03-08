@@ -123,8 +123,6 @@ func contentCodeToData(contentCode ContentCode) []byte {
 }
 
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-
 	headerData := []byte("msrv")
 
 	data := []byte{}
@@ -182,8 +180,6 @@ func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-
 		headerData := []byte("mccr")
 
 		data := []byte{}
@@ -203,8 +199,6 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-
 	headerData := []byte("mlog")
 
 	data := []byte{}
@@ -223,15 +217,21 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
-
 	// TODO end session r.URL.Query().Get("session-id")
 }
 
+func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
+
+		inner(w, r)
+	})
+}
+
 func main() {
-	http.HandleFunc("/server-info", serverInfoHandler)
-	http.HandleFunc("/content-codes", contentCodesHandler(contentCodes))
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/server-info", headers(serverInfoHandler))
+	http.HandleFunc("/content-codes", headers(contentCodesHandler(contentCodes)))
+	http.HandleFunc("/login", headers(loginHandler))
+	http.HandleFunc("/logout", headers(logoutHandler))
 	log.Fatal(http.ListenAndServe(":3689", nil))
 }

@@ -85,12 +85,6 @@ func TestGetServerInfo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	serverHeader := resp.HeaderMap.Get("DAAP-Server")
-	if serverHeader == "" {
-		t.Error("did not contain DAAP-Server header")
-	} else if !strings.Contains(serverHeader, `daap-server`) {
-		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
-	}
 
 	expectedData := []byte{
 		109, 115, 114, 118, 0, 0, 0, 160, // msrv
@@ -134,12 +128,6 @@ func TestGetContentCodes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	serverHeader := resp.HeaderMap.Get("DAAP-Server")
-	if serverHeader == "" {
-		t.Error("did not contain DAAP-Server header")
-	} else if !strings.Contains(serverHeader, `daap-server`) {
-		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
-	}
 
 	expectedData := []byte{
 		109, 99, 99, 114, 0, 0, 0, 134, // mccr
@@ -172,12 +160,6 @@ func TestGetLogin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	serverHeader := resp.HeaderMap.Get("DAAP-Server")
-	if serverHeader == "" {
-		t.Error("did not contain DAAP-Server header")
-	} else if !strings.Contains(serverHeader, `daap-server`) {
-		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
-	}
 
 	expectedData := []byte{
 		109, 108, 111, 103, 0, 0, 0, 24, // mlog
@@ -203,14 +185,33 @@ func TestGetLogout(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	if !bytes.Equal(p, []byte{}) {
+		t.Errorf("response body doen't match:\n%v", p)
+	}
+}
+
+func TestHeaders(t *testing.T) {
+	req, err := http.NewRequest("GET", "", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	dummyHandlerCalled := false
+	dummyHandler := func(w http.ResponseWriter, r *http.Request) {
+		dummyHandlerCalled = true
+	}
+	headers(dummyHandler)(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
 	serverHeader := resp.HeaderMap.Get("DAAP-Server")
 	if serverHeader == "" {
 		t.Error("did not contain DAAP-Server header")
 	} else if !strings.Contains(serverHeader, `daap-server`) {
 		t.Errorf("DAAP-Server header doesn't match:\n%s", serverHeader)
 	}
-
-	if !bytes.Equal(p, []byte{}) {
-		t.Errorf("response body doen't match:\n%v", p)
+	if !dummyHandlerCalled {
+		t.Error("did not call inner handler")
 	}
 }

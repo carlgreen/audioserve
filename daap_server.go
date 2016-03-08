@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 )
 
@@ -232,5 +233,5 @@ func main() {
 	http.HandleFunc("/content-codes", contentCodesHandler(contentCodes))
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/logout", logoutHandler)
-	http.ListenAndServe(":3689", nil)
+	log.Fatal(http.ListenAndServe(":3689", nil))
 }

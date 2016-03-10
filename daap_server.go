@@ -58,6 +58,7 @@ func routes(contentCodes []ContentCode, databases []ListingItem) http.Handler {
 	router.Get("/databases/:itemId/items", headers(databaseItemsHandler(databases)))
 	router.Get("/login", headers(loginHandler))
 	router.Get("/logout", headers(logoutHandler))
+	vestigo.CustomNotFoundHandlerFunc(headers(defaultHandler))
 	return router
 }
 

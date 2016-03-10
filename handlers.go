@@ -19,6 +19,10 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 	})
 }
 
+func defaultHandler(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, r.RequestURI+" not found", http.StatusNotFound)
+}
+
 func serverInfoHandler(w http.ResponseWriter, r *http.Request) {
 	headerData := []byte("msrv")
 

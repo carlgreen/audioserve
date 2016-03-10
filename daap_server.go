@@ -69,6 +69,10 @@ var contentCodes = []ContentCode{
 	{"avdb", "daap.serverdatabases", DmapContainer},
 }
 
+var databases = []ListingItem{
+	{1, 1, "testdb", 0, 0},
+}
+
 func intToByteArray(i int) []byte {
 	data := [4]byte{
 		byte((i >> 24) & 0xFF),
@@ -308,7 +312,7 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 func main() {
 	http.HandleFunc("/server-info", headers(serverInfoHandler))
 	http.HandleFunc("/content-codes", headers(contentCodesHandler(contentCodes)))
-	http.HandleFunc("/databases", headers(databasesHandler(nil)))
+	http.HandleFunc("/databases", headers(databasesHandler(databases)))
 	http.HandleFunc("/login", headers(loginHandler))
 	http.HandleFunc("/logout", headers(logoutHandler))
 	log.Fatal(http.ListenAndServe(":3689", nil))

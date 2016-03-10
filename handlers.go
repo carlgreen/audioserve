@@ -207,8 +207,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 func updateHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	revNumParam := r.Form.Get("revision-number")
-	fmt.Println(r.Form)
-	fmt.Println(r.Form.Get("revision-number"))
 	revNum, err := strconv.Atoi(revNumParam)
 	if err != nil {
 		msg := fmt.Sprintf("Cannot convert '%v' to int", revNumParam)

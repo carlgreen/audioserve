@@ -212,7 +212,7 @@ func TestGetDatabaseItems(t *testing.T) {
 	}
 }
 
-func TestUpdate(t *testing.T) {
+func TestGetUpdate(t *testing.T) {
 	router := routes(nil, nil)
 	req, err := http.NewRequest("GET", "/update?session-id=113&revision-number=1", nil)
 	if err != nil {

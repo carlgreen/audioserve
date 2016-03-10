@@ -303,6 +303,8 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s\t%s", r.Method, r.RequestURI)
+
 		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
 
 		inner(w, r)

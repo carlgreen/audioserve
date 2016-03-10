@@ -79,7 +79,7 @@ func TestCharToData(t *testing.T) {
 }
 
 func TestListingItemToData(t *testing.T) {
-	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0})
+	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0, nil})
 	expectedData := []byte{
 		109, 108, 105, 116, 0, 0, 0, 66, // mlit
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
@@ -218,7 +218,7 @@ func TestGetLogout(t *testing.T) {
 
 func TestGetDatabases(t *testing.T) {
 	var databases = []ListingItem{
-		{1, 1, "testdb", 1, 0},
+		{1, 1, "testdb", 1, 0, nil},
 	}
 	router := routes(nil, databases)
 
@@ -252,6 +252,47 @@ func TestGetDatabases(t *testing.T) {
 	}
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v", p)
+	}
+}
+
+func TestGetDatabaseItems(t *testing.T) {
+	var databases = []ListingItem{
+		{1, 1, "testdb", 1, 0, []ListingItem{
+			{2, 2, "aname", 0, 0, nil},
+		}},
+	}
+
+	router := routes(nil, databases)
+	req, err := http.NewRequest("GET", "/databases/1/items?session-id=113&meta=dmap.itemid,dmap.itemname,daap.songalbum,daap.songartist,daap.songformat,daap.songtime,daap.songsize,daap.songgenre,daap.songyear,daap.songtracknumber", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedData := []byte{
+		97, 100, 98, 115, 0, 0, 0, 21 + 24 + 8 + 73, // adbs
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
+		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
+		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
+		109, 108, 99, 108, 0, 0, 0, 73, // mlcl
+		109, 108, 105, 116, 0, 0, 0, 65, // mlit
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 2, // miid
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, // mper
+		109, 105, 110, 109, 0, 0, 0, 5, 97, 110, 97, 109, 101, // minm
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mimc
+		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+	}
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
 	}
 }
 

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/husobee/vestigo"
 )
@@ -25,6 +27,7 @@ type ListingItem struct {
 	itemName       string
 	itemCount      int // uint32
 	containerCount int // uint32
+	items          []ListingItem
 }
 
 const DmapChar int16 = 1
@@ -69,10 +72,13 @@ var contentCodes = []ContentCode{
 	{"mcty", "dmap.contentcodestype", DmapShort},
 	{"apro", "daap.protocolversion", DmapVersion},
 	{"avdb", "daap.serverdatabases", DmapContainer},
+	{"adbs", "daap.databasesongs", DmapContainer},
 }
 
 var databases = []ListingItem{
-	{1, 1, "testdb", 0, 0},
+	{1, 1, "testdb", 0, 0, []ListingItem{
+		{1, 1, "some item", 0, 0, nil},
+	}},
 }
 
 func longToByteArray(l int64) []byte {
@@ -301,6 +307,55 @@ func databasesHandler(databases []ListingItem) http.HandlerFunc {
 	})
 }
 
+func databaseItemsHandler(databases []ListingItem) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		itemIdParam := vestigo.Param(r, "itemId")
+		dbId, err := strconv.Atoi(itemIdParam)
+		if err != nil {
+			msg := fmt.Sprintf("Cannot convert '%v' to int", itemIdParam)
+			log.Print(msg)
+			http.Error(w, msg, http.StatusBadRequest)
+			return
+		}
+
+		// TODO do something with this
+		// log.Println("meta:", r.Form["meta"])
+
+		// TODO error check this
+		database := databases[dbId-1]
+
+		headerData := []byte("adbs")
+
+		data := []byte{}
+
+		data = append(data, "mstt"...)
+		data = append(data, intToData(200)...)
+
+		data = append(data, "muty"...)
+		data = append(data, charToData(0)...)
+
+		data = append(data, "mtco"...)
+		data = append(data, intToData(len(database.items))...)
+
+		data = append(data, "mrco"...)
+		data = append(data, intToData(len(database.items))...)
+
+		listing := []byte{}
+		for _, song := range database.items {
+			listing = append(listing, listingItemToData(song)...)
+		}
+
+		data = append(data, "mlcl"...)
+		data = append(data, intToByteArray(len(listing))...)
+		data = append(data, listing...)
+
+		headerData = append(headerData, intToByteArray(len(data))...)
+		data = append(headerData, data...)
+
+		w.Write(data)
+	})
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	headerData := []byte("mlog")
 
@@ -338,6 +393,7 @@ func routes(contentCodes []ContentCode, databases []ListingItem) http.Handler {
 	router.Get("/server-info", headers(serverInfoHandler))
 	router.Get("/content-codes", headers(contentCodesHandler(contentCodes)))
 	router.Get("/databases", headers(databasesHandler(databases)))
+	router.Get("/databases/:itemId/items", headers(databaseItemsHandler(databases)))
 	router.Get("/login", headers(loginHandler))
 	router.Get("/logout", headers(logoutHandler))
 	return router

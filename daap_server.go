@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/husobee/vestigo"
 )
 
 type ContentCode struct {
@@ -332,10 +334,11 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 }
 
 func main() {
-	http.HandleFunc("/server-info", headers(serverInfoHandler))
-	http.HandleFunc("/content-codes", headers(contentCodesHandler(contentCodes)))
-	http.HandleFunc("/databases", headers(databasesHandler(databases)))
-	http.HandleFunc("/login", headers(loginHandler))
-	http.HandleFunc("/logout", headers(logoutHandler))
-	log.Fatal(http.ListenAndServe(":3689", nil))
+	router := vestigo.NewRouter()
+	router.Get("/server-info", headers(serverInfoHandler))
+	router.Get("/content-codes", headers(contentCodesHandler(contentCodes)))
+	router.Get("/databases", headers(databasesHandler(databases)))
+	router.Get("/login", headers(loginHandler))
+	router.Get("/logout", headers(logoutHandler))
+	log.Fatal(http.ListenAndServe(":3689", router))
 }

@@ -18,11 +18,11 @@ type Version struct {
 }
 
 type ListingItem struct {
-	itemId         int
-	persistentId   int
+	itemId         int // uint32
+	persistentId   int // uint64
 	itemName       string
-	itemCount      int
-	containerCount int
+	itemCount      int // uint32
+	containerCount int // uint32
 }
 
 const DmapChar int16 = 1

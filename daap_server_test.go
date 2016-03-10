@@ -71,6 +71,21 @@ func TestCharToData(t *testing.T) {
 	}
 }
 
+func TestListingItemToData(t *testing.T) {
+	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0})
+	expectedData := []byte{
+		109, 108, 105, 116, 0, 0, 0, 62, // mlit
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
+		109, 112, 101, 114, 0, 0, 0, 4, 0, 0, 0, 1, // mper
+		109, 105, 110, 109, 0, 0, 0, 6, 116, 101, 115, 116, 100, 98, // minm
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
+		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+	}
+	if !bytes.Equal(data, expectedData) {
+		t.Errorf("wrong byte array value for listing item structure: %v", data)
+	}
+}
+
 func TestGetServerInfo(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {
@@ -188,6 +203,46 @@ func TestGetLogout(t *testing.T) {
 
 	if !bytes.Equal(p, []byte{}) {
 		t.Errorf("response body doen't match:\n%v", p)
+	}
+}
+
+func TestGetDatabases(t *testing.T) {
+	var databases = []ListingItem{
+		{1, 1, "testdb", 1, 0},
+	}
+	databasesHandle := databasesHandler(databases)
+
+	req, err := http.NewRequest("GET", "", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	databasesHandle(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedData := []byte{
+		97, 118, 100, 98, 0, 0, 0, 123, // avdb
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
+		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
+		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
+		109, 108, 99, 108, 0, 0, 0, 70, // mlcl
+		109, 108, 105, 116, 0, 0, 0, 62, // mlit
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
+		109, 112, 101, 114, 0, 0, 0, 4, 0, 0, 0, 1, // mper
+		109, 105, 110, 109, 0, 0, 0, 6, 116, 101, 115, 116, 100, 98, // minm
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
+		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+	}
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("\n%v", expectedData)
 	}
 }
 

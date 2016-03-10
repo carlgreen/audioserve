@@ -17,16 +17,33 @@ type Version struct {
 	patch uint8
 }
 
+type ListingItem struct {
+	itemId         int
+	persistentId   int
+	itemName       string
+	itemCount      int
+	containerCount int
+}
+
 const DmapChar int16 = 1
 const DmapShort int16 = 3
 const DmapLong int16 = 5
+const DmapLongLong int16 = 7
 const DmapString int16 = 9
 const DmapVersion int16 = 11
 const DmapContainer int16 = 12
 
 var contentCodes = []ContentCode{
+	{"miid", "dmap.itemid", DmapLong},
 	{"minm", "dmap.itemname", DmapString},
+	{"mper", "dmap.persistentid", DmapLongLong},
 	{"mstt", "dmap.status", DmapLong},
+	{"mimc", "dmap.itemcount", DmapLong},
+	{"mctc", "dmap.containercount", DmapLong},
+	{"mrco", "dmap.returnedcount", DmapLong},
+	{"mtco", "dmap.specifiedtotalcount", DmapLong},
+	{"mlcl", "dmap.listing", DmapContainer},
+	{"mlit", "dmap.listingitem", DmapContainer},
 	{"mdcl", "dmap.dictionary", DmapContainer},
 	{"msrv", "dmap.serverinforesponse", DmapContainer},
 	{"mslr", "dmap.loginrequired", DmapChar},
@@ -43,11 +60,13 @@ var contentCodes = []ContentCode{
 	{"msdc", "dmap.databasescount", DmapLong},
 	{"mlog", "dmap.loginresponse", DmapContainer},
 	{"mlid", "dmap.sessionid", DmapLong},
+	{"muty", "dmap.updatetype", DmapChar},
 	{"mccr", "dmap.contentcodesresponse", DmapContainer},
 	{"mcnm", "dmap.contentcodesnumber", DmapLong},
 	{"mcna", "dmap.contentcodesname", DmapString},
 	{"mcty", "dmap.contentcodestype", DmapShort},
 	{"apro", "daap.protocolversion", DmapVersion},
+	{"avdb", "daap.serverdatabases", DmapContainer},
 }
 
 func intToByteArray(i int) []byte {
@@ -118,6 +137,30 @@ func contentCodeToData(contentCode ContentCode) []byte {
 
 	data = append(data, "mcty"...)
 	data = append(data, shortToData(contentCode.dmapType)...)
+
+	return data
+}
+
+func listingItemToData(listingItem ListingItem) []byte {
+	data := []byte{}
+
+	data = append(data, "mlit"...)
+	data = append(data, intToByteArray(12+12+8+len(listingItem.itemName)+12+12)...)
+
+	data = append(data, "miid"...)
+	data = append(data, intToData(listingItem.itemId)...)
+
+	data = append(data, "mper"...)
+	data = append(data, intToData(listingItem.persistentId)...)
+
+	data = append(data, "minm"...)
+	data = append(data, stringToData(listingItem.itemName)...)
+
+	data = append(data, "mimc"...)
+	data = append(data, intToData(listingItem.itemCount)...)
+
+	data = append(data, "mctc"...)
+	data = append(data, intToData(listingItem.containerCount)...)
 
 	return data
 }
@@ -198,6 +241,40 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 	})
 }
 
+func databasesHandler(databases []ListingItem) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		headerData := []byte("avdb")
+
+		data := []byte{}
+
+		data = append(data, "mstt"...)
+		data = append(data, intToData(200)...)
+
+		data = append(data, "muty"...)
+		data = append(data, charToData(0)...)
+
+		data = append(data, "mtco"...)
+		data = append(data, intToData(len(databases))...)
+
+		data = append(data, "mrco"...)
+		data = append(data, intToData(len(databases))...)
+
+		listing := []byte{}
+		for _, database := range databases {
+			listing = append(listing, listingItemToData(database)...)
+		}
+
+		data = append(data, "mlcl"...)
+		data = append(data, intToByteArray(len(listing))...)
+		data = append(data, listing...)
+
+		headerData = append(headerData, intToByteArray(len(data))...)
+		data = append(headerData, data...)
+
+		w.Write(data)
+	})
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	headerData := []byte("mlog")
 
@@ -231,6 +308,7 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 func main() {
 	http.HandleFunc("/server-info", headers(serverInfoHandler))
 	http.HandleFunc("/content-codes", headers(contentCodesHandler(contentCodes)))
+	http.HandleFunc("/databases", headers(databasesHandler(nil)))
 	http.HandleFunc("/login", headers(loginHandler))
 	http.HandleFunc("/logout", headers(logoutHandler))
 	log.Fatal(http.ListenAndServe(":3689", nil))

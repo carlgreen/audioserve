@@ -37,6 +37,13 @@ func TestIntToData(t *testing.T) {
 	}
 }
 
+func TestLongToData(t *testing.T) {
+	data := longToData(200)
+	if !bytes.Equal(data, []byte{0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 200}) {
+		t.Errorf("wrong byte array value for long: %v", data)
+	}
+}
+
 func TestShortToData(t *testing.T) {
 	data := shortToData(12)
 	if !bytes.Equal(data, []byte{0, 0, 0, 2, 0, 12}) {
@@ -74,9 +81,9 @@ func TestCharToData(t *testing.T) {
 func TestListingItemToData(t *testing.T) {
 	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0})
 	expectedData := []byte{
-		109, 108, 105, 116, 0, 0, 0, 62, // mlit
+		109, 108, 105, 116, 0, 0, 0, 66, // mlit
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
-		109, 112, 101, 114, 0, 0, 0, 4, 0, 0, 0, 1, // mper
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
 		109, 105, 110, 109, 0, 0, 0, 6, 116, 101, 115, 116, 100, 98, // minm
 		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
 		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
@@ -227,15 +234,15 @@ func TestGetDatabases(t *testing.T) {
 	}
 
 	expectedData := []byte{
-		97, 118, 100, 98, 0, 0, 0, 123, // avdb
+		97, 118, 100, 98, 0, 0, 0, 127, // avdb
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
 		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
 		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
-		109, 108, 99, 108, 0, 0, 0, 70, // mlcl
-		109, 108, 105, 116, 0, 0, 0, 62, // mlit
+		109, 108, 99, 108, 0, 0, 0, 74, // mlcl
+		109, 108, 105, 116, 0, 0, 0, 66, // mlit
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
-		109, 112, 101, 114, 0, 0, 0, 4, 0, 0, 0, 1, // mper
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
 		109, 105, 110, 109, 0, 0, 0, 6, 116, 101, 115, 116, 100, 98, // minm
 		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
 		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc

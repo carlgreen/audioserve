@@ -18,8 +18,8 @@ type Version struct {
 }
 
 type ListingItem struct {
-	itemId         int // uint32
-	persistentId   int // uint64
+	itemId         int   // uint32
+	persistentId   int64 // uint64
 	itemName       string
 	itemCount      int // uint32
 	containerCount int // uint32
@@ -73,6 +73,20 @@ var databases = []ListingItem{
 	{1, 1, "testdb", 0, 0},
 }
 
+func longToByteArray(l int64) []byte {
+	data := [8]byte{
+		byte((l >> 56) & 0xFF),
+		byte((l >> 48) & 0xFF),
+		byte((l >> 40) & 0xFF),
+		byte((l >> 32) & 0xFF),
+		byte((l >> 24) & 0xFF),
+		byte((l >> 16) & 0xFF),
+		byte((l >> 8) & 0xFF),
+		byte(l & 0xFF),
+	}
+	return data[:]
+}
+
 func intToByteArray(i int) []byte {
 	data := [4]byte{
 		byte((i >> 24) & 0xFF),
@@ -100,6 +114,12 @@ func stringToData(s string) []byte {
 func intToData(i int) []byte {
 	data := intToByteArray(4)
 	data = append(data, intToByteArray(i)...)
+	return data
+}
+
+func longToData(i int64) []byte {
+	data := intToByteArray(8)
+	data = append(data, longToByteArray(i)...)
 	return data
 }
 
@@ -149,13 +169,13 @@ func listingItemToData(listingItem ListingItem) []byte {
 	data := []byte{}
 
 	data = append(data, "mlit"...)
-	data = append(data, intToByteArray(12+12+8+len(listingItem.itemName)+12+12)...)
+	data = append(data, intToByteArray(12+16+8+len(listingItem.itemName)+12+12)...)
 
 	data = append(data, "miid"...)
 	data = append(data, intToData(listingItem.itemId)...)
 
 	data = append(data, "mper"...)
-	data = append(data, intToData(listingItem.persistentId)...)
+	data = append(data, longToData(listingItem.persistentId)...)
 
 	data = append(data, "minm"...)
 	data = append(data, stringToData(listingItem.itemName)...)

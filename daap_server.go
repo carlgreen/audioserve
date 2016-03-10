@@ -34,6 +34,8 @@ var contentCodes = []ContentCode{
 	{"msdc", "dmap.databasescount", DmapLong},
 	{"mlog", "dmap.loginresponse", DmapContainer},
 	{"mlid", "dmap.sessionid", DmapLong},
+	{"mupd", "dmap.updateresponse", DmapContainer},
+	{"musr", "dmap.serverrevision", DmapLong},
 	{"muty", "dmap.updatetype", DmapChar},
 	{"mccr", "dmap.contentcodesresponse", DmapContainer},
 	{"mcnm", "dmap.contentcodesnumber", DmapLong},
@@ -58,6 +60,7 @@ func routes(contentCodes []ContentCode, databases []ListingItem) http.Handler {
 	router.Get("/databases/:itemId/items", headers(databaseItemsHandler(databases)))
 	router.Get("/login", headers(loginHandler))
 	router.Get("/logout", headers(logoutHandler))
+	router.Get("/update", headers(updateHandler))
 	vestigo.CustomNotFoundHandlerFunc(headers(defaultHandler))
 	return router
 }

@@ -203,3 +203,20 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO end session r.URL.Query().Get("session-id")
 }
+
+func updateHandler(w http.ResponseWriter, r *http.Request) {
+	headerData := []byte("mupd")
+
+	data := []byte{}
+
+	data = append(data, "musr"...)
+	data = append(data, intToData(1)...)
+
+	data = append(data, "mstt"...)
+	data = append(data, intToData(200)...)
+
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
+
+	w.Write(data)
+}

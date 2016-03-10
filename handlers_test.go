@@ -212,6 +212,32 @@ func TestGetDatabaseItems(t *testing.T) {
 	}
 }
 
+func TestUpdate(t *testing.T) {
+	router := routes(nil, nil)
+	req, err := http.NewRequest("GET", "/update?session-id=113&revision-number=1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedData := []byte{
+		109, 117, 112, 100, 0, 0, 0, 24, // mupd
+		109, 117, 115, 114, 0, 0, 0, 4, 0, 0, 0, 1, // musr
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+	}
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
+	}
+}
+
 func TestHeaders(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {

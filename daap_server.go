@@ -333,12 +333,17 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 	})
 }
 
-func main() {
+func routes(contentCodes []ContentCode, databases []ListingItem) http.Handler {
 	router := vestigo.NewRouter()
 	router.Get("/server-info", headers(serverInfoHandler))
 	router.Get("/content-codes", headers(contentCodesHandler(contentCodes)))
 	router.Get("/databases", headers(databasesHandler(databases)))
 	router.Get("/login", headers(loginHandler))
 	router.Get("/logout", headers(logoutHandler))
+	return router
+}
+
+func main() {
+	router := routes(contentCodes, databases)
 	log.Fatal(http.ListenAndServe(":3689", router))
 }

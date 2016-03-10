@@ -94,12 +94,13 @@ func TestListingItemToData(t *testing.T) {
 }
 
 func TestGetServerInfo(t *testing.T) {
-	req, err := http.NewRequest("GET", "", nil)
+	router := routes(nil, nil)
+	req, err := http.NewRequest("GET", "/server-info", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	serverInfoHandler(resp, req)
+	router.ServeHTTP(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}
@@ -136,13 +137,13 @@ func TestGetContentCodes(t *testing.T) {
 		{"abal", "daap.browsealbumlisting", DmapContainer},
 		{"msrv", "dmap.serverinforesponse", DmapContainer},
 	}
-	contentCodesHandle := contentCodesHandler(contentCodes)
-	req, err := http.NewRequest("GET", "", nil)
+	router := routes(contentCodes, nil)
+	req, err := http.NewRequest("GET", "/content-codes", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	contentCodesHandle(resp, req)
+	router.ServeHTTP(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}
@@ -169,12 +170,13 @@ func TestGetContentCodes(t *testing.T) {
 }
 
 func TestGetLogin(t *testing.T) {
-	req, err := http.NewRequest("GET", "", nil)
+	router := routes(nil, nil)
+	req, err := http.NewRequest("GET", "/login", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	loginHandler(resp, req)
+	router.ServeHTTP(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}
@@ -194,12 +196,13 @@ func TestGetLogin(t *testing.T) {
 }
 
 func TestGetLogout(t *testing.T) {
-	req, err := http.NewRequest("GET", "?session-id=113", nil)
+	router := routes(nil, nil)
+	req, err := http.NewRequest("GET", "/logout?session-id=113", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	logoutHandler(resp, req)
+	router.ServeHTTP(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}
@@ -217,14 +220,14 @@ func TestGetDatabases(t *testing.T) {
 	var databases = []ListingItem{
 		{1, 1, "testdb", 1, 0},
 	}
-	databasesHandle := databasesHandler(databases)
+	router := routes(nil, databases)
 
-	req, err := http.NewRequest("GET", "", nil)
+	req, err := http.NewRequest("GET", "/databases", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	resp := httptest.NewRecorder()
-	databasesHandle(resp, req)
+	router.ServeHTTP(resp, req)
 	if resp.Code != http.StatusOK {
 		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
 	}

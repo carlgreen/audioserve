@@ -242,7 +242,6 @@ func TestGetDatabases(t *testing.T) {
 	}
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v", p)
-		t.Errorf("\n%v", expectedData)
 	}
 }
 

@@ -205,12 +205,24 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	revNumParam := r.Form.Get("revision-number")
+	fmt.Println(r.Form)
+	fmt.Println(r.Form.Get("revision-number"))
+	revNum, err := strconv.Atoi(revNumParam)
+	if err != nil {
+		msg := fmt.Sprintf("Cannot convert '%v' to int", revNumParam)
+		log.Print(msg)
+		http.Error(w, msg, http.StatusBadRequest)
+		return
+	}
+
 	headerData := []byte("mupd")
 
 	data := []byte{}
 
 	data = append(data, "musr"...)
-	data = append(data, intToData(1)...)
+	data = append(data, intToData(revNum)...)
 
 	data = append(data, "mstt"...)
 	data = append(data, intToData(200)...)

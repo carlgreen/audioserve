@@ -208,7 +208,7 @@ func TestGetDatabaseItems(t *testing.T) {
 		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
+		t.Errorf("response body doen't match:\n%v", p)
 	}
 }
 

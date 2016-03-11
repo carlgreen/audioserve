@@ -216,6 +216,50 @@ func TestGetDatabaseItems(t *testing.T) {
 	}
 }
 
+func TestGetDatabaseContainers(t *testing.T) {
+	var databases = []Database{
+		{
+			ListingItem{1, 1, "testdb", 1, 0},
+			nil,
+			[]ListingItem{
+				{3, 3, "chart", 0, 0},
+			},
+		},
+	}
+	router := routes(nil, databases)
+	req, err := http.NewRequest("GET", "/databases/1/containers?session-id=113&revision-number=1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("wrong http status, want %v, got %v", http.StatusOK, resp.Code)
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedData := []byte{
+		97, 112, 108, 121, 0, 0, 0, 12 + 9 + 12 + 12 + 8 + 73, // aply
+		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
+		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
+		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
+		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
+		109, 108, 99, 108, 0, 0, 0, 73, // mlcl
+		109, 108, 105, 116, 0, 0, 0, 65, // mlit
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 3, // miid
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 3, // mper
+		109, 105, 110, 109, 0, 0, 0, 5, 99, 104, 97, 114, 116, // minm
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mimc
+		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+	}
+	if !bytes.Equal(p, expectedData) {
+		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
+	}
+}
+
 func TestGetUpdate(t *testing.T) {
 	router := routes(nil, nil)
 	req, err := http.NewRequest("GET", "/update?session-id=113&revision-number=1", nil)

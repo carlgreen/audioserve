@@ -182,6 +182,52 @@ func databaseItemsHandler(databases []Database) http.HandlerFunc {
 	})
 }
 
+func databaseContainersHandler(databases []Database) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		itemIdParam := vestigo.Param(r, "itemId")
+		dbId, err := strconv.Atoi(itemIdParam)
+		if err != nil {
+			msg := fmt.Sprintf("Cannot convert '%v' to int", itemIdParam)
+			log.Print(msg)
+			http.Error(w, msg, http.StatusBadRequest)
+			return
+		}
+
+		// TODO error check this
+		database := databases[dbId-1]
+
+		headerData := []byte("aply")
+
+		data := []byte{}
+
+		data = append(data, "mstt"...)
+		data = append(data, intToData(200)...)
+
+		data = append(data, "muty"...)
+		data = append(data, charToData(0)...)
+
+		data = append(data, "mtco"...)
+		data = append(data, intToData(len(database.playlists))...)
+
+		data = append(data, "mrco"...)
+		data = append(data, intToData(len(database.playlists))...)
+
+		listing := []byte{}
+		for _, playlist := range database.playlists {
+			listing = append(listing, listingItemToData(playlist)...)
+		}
+
+		data = append(data, "mlcl"...)
+		data = append(data, intToByteArray(len(listing))...)
+		data = append(data, listing...)
+
+		headerData = append(headerData, intToByteArray(len(data))...)
+		data = append(headerData, data...)
+
+		w.Write(data)
+	})
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	headerData := []byte("mlog")
 

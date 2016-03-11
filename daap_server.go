@@ -44,6 +44,7 @@ var contentCodes = []ContentCode{
 	{"apro", "daap.protocolversion", DmapVersion},
 	{"avdb", "daap.serverdatabases", DmapContainer},
 	{"adbs", "daap.databasesongs", DmapContainer},
+	{"aply", "daap.databaseplaylists", DmapContainer},
 }
 
 var databases = []Database{
@@ -62,6 +63,7 @@ func routes(contentCodes []ContentCode, databases []Database) http.Handler {
 	router.Get("/content-codes", headers(contentCodesHandler(contentCodes)))
 	router.Get("/databases", headers(databasesHandler(databases)))
 	router.Get("/databases/:itemId/items", headers(databaseItemsHandler(databases)))
+	router.Get("/databases/:itemId/containers", headers(databaseContainersHandler(databases)))
 	router.Get("/login", headers(loginHandler))
 	router.Get("/logout", headers(logoutHandler))
 	router.Get("/update", headers(updateHandler))

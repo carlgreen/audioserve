@@ -46,13 +46,17 @@ var contentCodes = []ContentCode{
 	{"adbs", "daap.databasesongs", DmapContainer},
 }
 
-var databases = []ListingItem{
-	{1, 1, "testdb", 0, 0, []ListingItem{
-		{1, 1, "some item", 0, 0, nil},
-	}},
+var databases = []Database{
+	{
+		ListingItem{1, 1, "testdb", 0, 0},
+		[]ListingItem{
+			{1, 1, "some item", 0, 0},
+		},
+		nil,
+	},
 }
 
-func routes(contentCodes []ContentCode, databases []ListingItem) http.Handler {
+func routes(contentCodes []ContentCode, databases []Database) http.Handler {
 	router := vestigo.NewRouter()
 	router.Get("/server-info", headers(serverInfoHandler))
 	router.Get("/content-codes", headers(contentCodesHandler(contentCodes)))

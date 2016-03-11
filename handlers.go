@@ -99,7 +99,7 @@ func contentCodesHandler(contentCodes []ContentCode) http.HandlerFunc {
 	})
 }
 
-func databasesHandler(databases []ListingItem) http.HandlerFunc {
+func databasesHandler(databases []Database) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		headerData := []byte("avdb")
 
@@ -119,7 +119,7 @@ func databasesHandler(databases []ListingItem) http.HandlerFunc {
 
 		listing := []byte{}
 		for _, database := range databases {
-			listing = append(listing, listingItemToData(database)...)
+			listing = append(listing, listingItemToData(database.database)...)
 		}
 
 		data = append(data, "mlcl"...)
@@ -133,7 +133,7 @@ func databasesHandler(databases []ListingItem) http.HandlerFunc {
 	})
 }
 
-func databaseItemsHandler(databases []ListingItem) http.HandlerFunc {
+func databaseItemsHandler(databases []Database) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		itemIdParam := vestigo.Param(r, "itemId")
 		dbId, err := strconv.Atoi(itemIdParam)
@@ -161,13 +161,13 @@ func databaseItemsHandler(databases []ListingItem) http.HandlerFunc {
 		data = append(data, charToData(0)...)
 
 		data = append(data, "mtco"...)
-		data = append(data, intToData(len(database.items))...)
+		data = append(data, intToData(len(database.songs))...)
 
 		data = append(data, "mrco"...)
-		data = append(data, intToData(len(database.items))...)
+		data = append(data, intToData(len(database.songs))...)
 
 		listing := []byte{}
-		for _, song := range database.items {
+		for _, song := range database.songs {
 			listing = append(listing, listingItemToData(song)...)
 		}
 

@@ -18,7 +18,12 @@ type ListingItem struct {
 	itemName       string
 	itemCount      int // uint32
 	containerCount int // uint32
-	items          []ListingItem
+}
+
+type Database struct {
+	database  ListingItem
+	songs     []ListingItem
+	playlists []ListingItem
 }
 
 const DmapChar int16 = 1

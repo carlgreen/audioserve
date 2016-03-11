@@ -75,7 +75,7 @@ func TestContentCodeToData(t *testing.T) {
 }
 
 func TestListingItemToData(t *testing.T) {
-	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0, nil})
+	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0})
 	expectedData := []byte{
 		109, 108, 105, 116, 0, 0, 0, 66, // mlit
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid

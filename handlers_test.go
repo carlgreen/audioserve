@@ -133,8 +133,8 @@ func TestGetLogout(t *testing.T) {
 }
 
 func TestGetDatabases(t *testing.T) {
-	var databases = []ListingItem{
-		{1, 1, "testdb", 1, 0, nil},
+	var databases = []Database{
+		{ListingItem{1, 1, "testdb", 1, 0}, nil, nil},
 	}
 	router := routes(nil, databases)
 
@@ -172,10 +172,14 @@ func TestGetDatabases(t *testing.T) {
 }
 
 func TestGetDatabaseItems(t *testing.T) {
-	var databases = []ListingItem{
-		{1, 1, "testdb", 1, 0, []ListingItem{
-			{2, 2, "aname", 0, 0, nil},
-		}},
+	var databases = []Database{
+		{
+			ListingItem{1, 1, "testdb", 1, 0},
+			[]ListingItem{
+				{2, 2, "aname", 0, 0},
+			},
+			nil,
+		},
 	}
 
 	router := routes(nil, databases)

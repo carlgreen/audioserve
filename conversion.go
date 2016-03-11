@@ -75,10 +75,9 @@ func versionToData(version Version) []byte {
 }
 
 func contentCodeToData(contentCode ContentCode) []byte {
-	data := []byte{}
+	headerData := []byte("mdcl")
 
-	data = append(data, "mdcl"...)
-	data = append(data, intToByteArray(12+8+len(contentCode.name)+10)...)
+	data := []byte{}
 
 	data = append(data, "mcnm"...)
 	data = append(data, stringToData(contentCode.number)...)
@@ -89,14 +88,16 @@ func contentCodeToData(contentCode ContentCode) []byte {
 	data = append(data, "mcty"...)
 	data = append(data, shortToData(contentCode.dmapType)...)
 
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
+
 	return data
 }
 
 func listingItemToData(listingItem ListingItem) []byte {
-	data := []byte{}
+	headerData := []byte("mlit")
 
-	data = append(data, "mlit"...)
-	data = append(data, intToByteArray(12+16+8+len(listingItem.itemName)+12+12)...)
+	data := []byte{}
 
 	data = append(data, "miid"...)
 	data = append(data, intToData(listingItem.itemId)...)
@@ -112,6 +113,9 @@ func listingItemToData(listingItem ListingItem) []byte {
 
 	data = append(data, "mctc"...)
 	data = append(data, intToData(listingItem.containerCount)...)
+
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
 
 	return data
 }

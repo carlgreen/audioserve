@@ -90,16 +90,26 @@ func TestDataseToData(t *testing.T) {
 }
 
 func TestSongToData(t *testing.T) {
-	data := songToData(Song{"a name", "an artist", "an album"})
+	fields := []string{"dmap.itemid", "dmap.itemname", "dmap.itemkind", "dmap.persistentid", "daap.songalbum", "daap.songartist"}
+	data := songToData(fields, Song{"a name", "an album", "an artist"})
 	expectedData := []byte{
-		109, 108, 105, 116, 0, 0, 0, 66, // mlit
+		109, 108, 105, 116, 0, 0, 0, 84, // mlit
+		109, 105, 107, 100, 0, 0, 0, 1, 2, // mikd
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
-		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
 		109, 105, 110, 109, 0, 0, 0, 6, 97, 32, 110, 97, 109, 101, // minm
-		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
-		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
+		97, 115, 97, 108, 0, 0, 0, 8, 97, 110, 32, 97, 108, 98, 117, 109, // asal
+		97, 115, 97, 114, 0, 0, 0, 9, 97, 110, 32, 97, 114, 116, 105, 115, 116, // asar
 	}
 	if !bytes.Equal(data, expectedData) {
-		t.Errorf("wrong byte array value for listing item structure: \n%v\n%v", data, expectedData)
+		t.Errorf("wrong byte array value for listing item structure: %v", data, expectedData)
+	}
+}
+
+func TestIndex(t *testing.T) {
+	slice := []string{"a", "b", "c"}
+	got := index(slice, "b")
+	if got != 1 {
+		t.Errorf("wrong index found: %v", got)
 	}
 }

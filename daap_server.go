@@ -10,6 +10,7 @@ import (
 var contentCodes = []ContentCode{
 	{"miid", "dmap.itemid", DmapLong},
 	{"minm", "dmap.itemname", DmapString},
+	{"mikd", "dmap.itemkind", DmapChar},
 	{"mper", "dmap.persistentid", DmapLongLong},
 	{"mstt", "dmap.status", DmapLong},
 	{"mimc", "dmap.itemcount", DmapLong},
@@ -44,6 +45,8 @@ var contentCodes = []ContentCode{
 	{"apro", "daap.protocolversion", DmapVersion},
 	{"avdb", "daap.serverdatabases", DmapContainer},
 	{"adbs", "daap.databasesongs", DmapContainer},
+	{"asal", "daap.songalbum", DmapString},
+	{"asar", "daap.songartist", DmapString},
 	{"aply", "daap.databaseplaylists", DmapContainer},
 }
 

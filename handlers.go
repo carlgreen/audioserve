@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/husobee/vestigo"
 )
@@ -144,8 +145,7 @@ func databaseItemsHandler(databases []Database) http.HandlerFunc {
 			return
 		}
 
-		// TODO do something with this
-		// log.Println("meta:", r.Form["meta"])
+		fields := strings.Split(r.Form["meta"][0], ",")
 
 		// TODO error check this
 		database := databases[dbId-1]
@@ -168,7 +168,7 @@ func databaseItemsHandler(databases []Database) http.HandlerFunc {
 
 		listing := []byte{}
 		for _, song := range database.songs {
-			listing = append(listing, songToData(song)...)
+			listing = append(listing, songToData(fields, song)...)
 		}
 
 		data = append(data, "mlcl"...)

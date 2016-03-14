@@ -176,13 +176,13 @@ func TestGetDatabaseItems(t *testing.T) {
 		{
 			"testdb",
 			[]Song{
-				{"aname", "aartist", "aalbum"},
+				{"aname", "aalbum", "aartist"},
 			},
 		},
 	}
 
 	router := routes(nil, databases)
-	req, err := http.NewRequest("GET", "/databases/1/items?session-id=113&meta=dmap.itemid,dmap.itemname,daap.songalbum,daap.songartist,daap.songformat,daap.songtime,daap.songsize,daap.songgenre,daap.songyear,daap.songtracknumber", nil)
+	req, err := http.NewRequest("GET", "/databases/1/items?session-id=113&meta=dmap.itemid,dmap.itemname,dmap.itemkind,dmap.persistentid,daap.songalbum,daap.songartist", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -197,21 +197,22 @@ func TestGetDatabaseItems(t *testing.T) {
 	}
 
 	expectedData := []byte{
-		97, 100, 98, 115, 0, 0, 0, 21 + 24 + 8 + 73, // adbs
+		97, 100, 98, 115, 0, 0, 0, 21 + 24 + 8 + 87, // adbs
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
 		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
 		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
-		109, 108, 99, 108, 0, 0, 0, 73, // mlcl
-		109, 108, 105, 116, 0, 0, 0, 65, // mlit
+		109, 108, 99, 108, 0, 0, 0, 8 + 79, // mlcl
+		109, 108, 105, 116, 0, 0, 0, 79, // mlit
+		109, 105, 107, 100, 0, 0, 0, 1, 2, // mikd
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
-		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
 		109, 105, 110, 109, 0, 0, 0, 5, 97, 110, 97, 109, 101, // minm
-		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
-		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
+		97, 115, 97, 108, 0, 0, 0, 6, 97, 97, 108, 98, 117, 109, // asal
+		97, 115, 97, 114, 0, 0, 0, 7, 97, 97, 114, 116, 105, 115, 116, // asar
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doen't match:\n%v", p, expectedData)
 	}
 }
 
@@ -245,7 +246,7 @@ func TestGetDatabaseContainers(t *testing.T) {
 		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 0, // mrco
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
+		t.Errorf("response body doen't match:\n%v", p, expectedData)
 	}
 }
 
@@ -271,7 +272,7 @@ func TestGetUpdate(t *testing.T) {
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)
+		t.Errorf("response body doen't match:\n%v", p, expectedData)
 	}
 }
 

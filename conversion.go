@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 func shortToByteArray(i int16) []byte {
 	data := [2]byte{
 		byte((i >> 8) & 0xFF),
@@ -123,30 +125,52 @@ func databaseToData(database Database) []byte {
 	return data
 }
 
-func songToData(song Song) []byte {
+func songToData(fields []string, song Song) []byte {
 	headerData := []byte("mlit")
 
 	data := []byte{}
 
-	data = append(data, "miid"...)
-	data = append(data, intToData(1)...)
+	kindInd := index(fields, "dmap.itemkind")
+	if kindInd > -1 {
+		data = append(data, "mikd"...)
+		data = append(data, charToData(2)...)
 
-	data = append(data, "mper"...)
-	data = append(data, longToData(1)...)
+		fields = append(fields[:kindInd], fields[kindInd+1:]...)
+	}
 
-	data = append(data, "minm"...)
-	data = append(data, stringToData(song.Title)...)
-
-	// no place in song
-	data = append(data, "mimc"...)
-	data = append(data, intToData(1)...)
-
-	// no place in song
-	data = append(data, "mctc"...)
-	data = append(data, intToData(0)...)
+	for _, field := range fields {
+		switch field {
+		case "dmap.itemid":
+			data = append(data, "miid"...)
+			data = append(data, intToData(1)...)
+		case "dmap.itemname":
+			data = append(data, "minm"...)
+			data = append(data, stringToData(song.Title)...)
+		case "dmap.persistentid":
+			data = append(data, "mper"...)
+			data = append(data, longToData(1)...)
+		case "daap.songalbum":
+			data = append(data, "asal"...)
+			data = append(data, stringToData(song.Album)...)
+		case "daap.songartist":
+			data = append(data, "asar"...)
+			data = append(data, stringToData(song.Artist)...)
+		default:
+			log.Printf("unexpected field: %s", field)
+		}
+	}
 
 	headerData = append(headerData, intToByteArray(len(data))...)
 	data = append(headerData, data...)
 
 	return data
+}
+
+func index(s []string, e string) int {
+	for i, a := range s {
+		if a == e {
+			return i
+		}
+	}
+	return -1
 }

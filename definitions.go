@@ -12,18 +12,15 @@ type Version struct {
 	patch uint8
 }
 
-type ListingItem struct {
-	itemId         int   // uint32
-	persistentId   int64 // uint64
-	itemName       string
-	itemCount      int // uint32
-	containerCount int // uint32
+type Song struct {
+	Title  string
+	Album  string
+	Artist string
 }
 
 type Database struct {
-	database  ListingItem
-	songs     []ListingItem
-	playlists []ListingItem
+	name  string
+	songs []Song
 }
 
 const DmapChar int16 = 1

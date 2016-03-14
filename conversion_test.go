@@ -74,8 +74,8 @@ func TestContentCodeToData(t *testing.T) {
 	}
 }
 
-func TestListingItemToData(t *testing.T) {
-	data := listingItemToData(ListingItem{1, 1, "testdb", 1, 0})
+func TestDataseToData(t *testing.T) {
+	data := databaseToData(Database{"testdb", []Song{{"", "", ""}}})
 	expectedData := []byte{
 		109, 108, 105, 116, 0, 0, 0, 66, // mlit
 		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
@@ -86,5 +86,20 @@ func TestListingItemToData(t *testing.T) {
 	}
 	if !bytes.Equal(data, expectedData) {
 		t.Errorf("wrong byte array value for listing item structure: %v", data)
+	}
+}
+
+func TestSongToData(t *testing.T) {
+	data := songToData(Song{"a name", "an artist", "an album"})
+	expectedData := []byte{
+		109, 108, 105, 116, 0, 0, 0, 66, // mlit
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
+		109, 105, 110, 109, 0, 0, 0, 6, 97, 32, 110, 97, 109, 101, // minm
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
+		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+	}
+	if !bytes.Equal(data, expectedData) {
+		t.Errorf("wrong byte array value for listing item structure: \n%v\n%v", data, expectedData)
 	}
 }

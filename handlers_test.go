@@ -134,7 +134,7 @@ func TestGetLogout(t *testing.T) {
 
 func TestGetDatabases(t *testing.T) {
 	var databases = []Database{
-		{ListingItem{1, 1, "testdb", 1, 0}, nil, nil},
+		{"testdb", []Song{{"", "", ""}}},
 	}
 	router := routes(nil, databases)
 
@@ -174,11 +174,10 @@ func TestGetDatabases(t *testing.T) {
 func TestGetDatabaseItems(t *testing.T) {
 	var databases = []Database{
 		{
-			ListingItem{1, 1, "testdb", 1, 0},
-			[]ListingItem{
-				{2, 2, "aname", 0, 0},
+			"testdb",
+			[]Song{
+				{"aname", "aartist", "aalbum"},
 			},
-			nil,
 		},
 	}
 
@@ -205,10 +204,10 @@ func TestGetDatabaseItems(t *testing.T) {
 		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
 		109, 108, 99, 108, 0, 0, 0, 73, // mlcl
 		109, 108, 105, 116, 0, 0, 0, 65, // mlit
-		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 2, // miid
-		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, // mper
+		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 1, // miid
+		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, // mper
 		109, 105, 110, 109, 0, 0, 0, 5, 97, 110, 97, 109, 101, // minm
-		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mimc
+		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 1, // mimc
 		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
 	}
 	if !bytes.Equal(p, expectedData) {
@@ -219,11 +218,8 @@ func TestGetDatabaseItems(t *testing.T) {
 func TestGetDatabaseContainers(t *testing.T) {
 	var databases = []Database{
 		{
-			ListingItem{1, 1, "testdb", 1, 0},
+			"testdb",
 			nil,
-			[]ListingItem{
-				{3, 3, "chart", 0, 0},
-			},
 		},
 	}
 	router := routes(nil, databases)
@@ -242,18 +238,11 @@ func TestGetDatabaseContainers(t *testing.T) {
 	}
 
 	expectedData := []byte{
-		97, 112, 108, 121, 0, 0, 0, 12 + 9 + 12 + 12 + 8 + 73, // aply
+		97, 112, 108, 121, 0, 0, 0, 12 + 9 + 12 + 12, // aply
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 		109, 117, 116, 121, 0, 0, 0, 1, 0, // muty
-		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mtco
-		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 1, // mrco
-		109, 108, 99, 108, 0, 0, 0, 73, // mlcl
-		109, 108, 105, 116, 0, 0, 0, 65, // mlit
-		109, 105, 105, 100, 0, 0, 0, 4, 0, 0, 0, 3, // miid
-		109, 112, 101, 114, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 3, // mper
-		109, 105, 110, 109, 0, 0, 0, 5, 99, 104, 97, 114, 116, // minm
-		109, 105, 109, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mimc
-		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
+		109, 116, 99, 111, 0, 0, 0, 4, 0, 0, 0, 0, // mtco
+		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 0, // mrco
 	}
 	if !bytes.Equal(p, expectedData) {
 		t.Errorf("response body doen't match:\n%v\n%v", p, expectedData)

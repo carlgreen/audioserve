@@ -94,25 +94,56 @@ func contentCodeToData(contentCode ContentCode) []byte {
 	return data
 }
 
-func listingItemToData(listingItem ListingItem) []byte {
+func databaseToData(database Database) []byte {
+	headerData := []byte("mlit")
+
+	data := []byte{}
+
+	// assume only one database
+	data = append(data, "miid"...)
+	data = append(data, intToData(1)...)
+
+	// assume only one database
+	data = append(data, "mper"...)
+	data = append(data, longToData(1)...)
+
+	data = append(data, "minm"...)
+	data = append(data, stringToData(database.name)...)
+
+	data = append(data, "mimc"...)
+	data = append(data, intToData(len(database.songs))...)
+
+	// no playlist support
+	data = append(data, "mctc"...)
+	data = append(data, intToData(0)...)
+
+	headerData = append(headerData, intToByteArray(len(data))...)
+	data = append(headerData, data...)
+
+	return data
+}
+
+func songToData(song Song) []byte {
 	headerData := []byte("mlit")
 
 	data := []byte{}
 
 	data = append(data, "miid"...)
-	data = append(data, intToData(listingItem.itemId)...)
+	data = append(data, intToData(1)...)
 
 	data = append(data, "mper"...)
-	data = append(data, longToData(listingItem.persistentId)...)
+	data = append(data, longToData(1)...)
 
 	data = append(data, "minm"...)
-	data = append(data, stringToData(listingItem.itemName)...)
+	data = append(data, stringToData(song.Title)...)
 
+	// no place in song
 	data = append(data, "mimc"...)
-	data = append(data, intToData(listingItem.itemCount)...)
+	data = append(data, intToData(1)...)
 
+	// no place in song
 	data = append(data, "mctc"...)
-	data = append(data, intToData(listingItem.containerCount)...)
+	data = append(data, intToData(0)...)
 
 	headerData = append(headerData, intToByteArray(len(data))...)
 	data = append(headerData, data...)

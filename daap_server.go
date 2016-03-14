@@ -49,11 +49,10 @@ var contentCodes = []ContentCode{
 
 var databases = []Database{
 	{
-		ListingItem{1, 1, "testdb", 0, 0},
-		[]ListingItem{
-			{1, 1, "some item", 0, 0},
+		"testdb",
+		[]Song{
+			{"some item", "some artist", "some album"},
 		},
-		nil,
 	},
 }
 

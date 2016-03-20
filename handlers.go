@@ -15,6 +15,7 @@ func headers(inner func(http.ResponseWriter, *http.Request)) func(http.ResponseW
 		log.Printf("%s\t%s", r.Method, r.RequestURI)
 
 		w.Header().Add(`DAAP-Server`, `daap-server: 1.0`)
+		w.Header().Add(`Content-Type`, `application/x-dmap-tagged`)
 
 		inner(w, r)
 	})

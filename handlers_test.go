@@ -44,7 +44,7 @@ func TestGetServerInfo(t *testing.T) {
 		109, 115, 100, 99, 0, 0, 0, 4, 0, 0, 0, 1, // msdc
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doesn't match:\n%v", p)
 	}
 }
 
@@ -81,7 +81,7 @@ func TestGetContentCodes(t *testing.T) {
 		109, 99, 116, 121, 0, 0, 0, 2, 0, 12, // mcty
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doesn't match:\n%v", p)
 	}
 }
 
@@ -107,7 +107,7 @@ func TestGetLogin(t *testing.T) {
 		109, 108, 105, 100, 0, 0, 0, 4, 0, 0, 0, 113, // mlid
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doesn't match:\n%v", p)
 	}
 }
 
@@ -128,7 +128,7 @@ func TestGetLogout(t *testing.T) {
 	}
 
 	if !bytes.Equal(p, []byte{}) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doesn't match:\n%v", p)
 	}
 }
 
@@ -167,7 +167,7 @@ func TestGetDatabases(t *testing.T) {
 		109, 99, 116, 99, 0, 0, 0, 4, 0, 0, 0, 0, // mctc
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p)
+		t.Errorf("response body doesn't match:\n%v", p)
 	}
 }
 
@@ -212,7 +212,7 @@ func TestGetDatabaseItems(t *testing.T) {
 		97, 115, 97, 114, 0, 0, 0, 7, 97, 97, 114, 116, 105, 115, 116, // asar
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p, expectedData)
+		t.Errorf("response body doesn't match:\n%v", p, expectedData)
 	}
 }
 
@@ -246,7 +246,7 @@ func TestGetDatabaseContainers(t *testing.T) {
 		109, 114, 99, 111, 0, 0, 0, 4, 0, 0, 0, 0, // mrco
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p, expectedData)
+		t.Errorf("response body doesn't match:\n%v", p, expectedData)
 	}
 }
 
@@ -272,7 +272,7 @@ func TestGetUpdate(t *testing.T) {
 		109, 115, 116, 116, 0, 0, 0, 4, 0, 0, 0, 200, // mstt
 	}
 	if !bytes.Equal(p, expectedData) {
-		t.Errorf("response body doen't match:\n%v", p, expectedData)
+		t.Errorf("response body doesn't match:\n%v", p, expectedData)
 	}
 }
 
